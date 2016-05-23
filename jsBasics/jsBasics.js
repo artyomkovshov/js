@@ -1,31 +1,35 @@
 /* Реализовать функцию add(x)(y), которая будет работать следующим образом: add(2)(3) = 5; */
 
-function add(a) {
+function sum(a) {
     return function(b) {
         return a + b;
     };
 };
 
-console.log(add(5)(7)); //12
-console.log(add(2)(3)); //5
+console.log(sum(5)(7)); //12
+console.log(sum(2)(3)); //5
 
 // Написать функцию, которая вернет клон переданного объекта;
 
 function clone(obj) {
-    if (typeof obj !== 'object') {
+    if (typeof obj !== 'object' || 'activeClone' in obj) {
         return obj;
     }
-    var newObj = {};
+    var newObj = obj.constructor();
     for (var key in obj) {
-        newObj[key] = obj[key];
-    };
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj['activeClone'] = null;
+            newObj[key] = clone(obj[key]);
+            delete obj['activeClone'];
+        }
+    }
     return newObj;
 }
 
 var user = {
     name: "Name",
     country: "Country"
-}
+};
 
 var newUser = clone(user);
 console.log(newUser.name);
@@ -54,20 +58,6 @@ console.log(newUser.country);
     
 */
 
-// Реализовать функцию calc, количество чисел может быть любым;
-
-function calc(a){
-    var buffer = [a];
-    function f(b) {
-        buffer.push(b);
-        return f;
-    }
-    return f;
-}
-
-var result = calc(1)(2)(3)(4)(5);
-
-console.log(result.buffer);
 
 ////////////////////////////////////////////////////////////////
 // function Point() {
@@ -90,3 +80,96 @@ console.log(result.buffer);
 // var a = new Point();
 // var f = a.getX;
 // console.log(f.bind(a)());
+
+///////////////////////////////////////////////////////////////////////////////
+
+//Реализовать функцию, реализующую реверс строки;
+
+
+function revers(str) {
+  var i, buff = '';
+  for (i = str.length; i >= 0; i -= 1) {
+    buff += str.charAt(i);
+  }
+  return buff;
+}
+
+console.log(revers('abc sdsd'));
+
+/////////////////////////////////////////////////////////
+
+// Сконвертировать массив чисел в массив функций, возвращающие числа, было a[i] == 5, стало a[i]() == 5;
+
+Arr = [1, 2, 3, 4, 5];
+
+var newArr = Arr.map(
+  function(item) {
+    return function() {
+        return item;
+      };
+    }
+);
+
+
+console.log(newArr[0]);
+
+if (newArr[1]() == 2) {
+  console.log('true');
+}
+
+/////////////////////////////////////////////////////
+
+// Дано:
+// function add(x, y) {
+//  return x + y;
+// }
+
+// function mul(x, y) {
+//  return x * y;
+// }
+
+// function calc(x){
+// }
+
+// var result = calc(1)(2)(3)(4)(5);
+
+// console.assert(result(add) == 15);
+// console.assert(result(mul) == 120);
+// Реализовать функцию calc, количество чисел может быть любым;
+
+function add(x, y) {
+ return x + y;
+}
+
+function mul(x, y) {
+ return x * y;
+}
+
+function calc(x) {
+  var arr = [x];
+  function func(y) {
+    if (typeof(y) == 'function' && y.name == 'add') {
+        var buffAdd = 0;
+        for (var i = 0; i < arr.length; i += 1) {
+          buffAdd = add(buffAdd, arr[i]);
+        }   
+        return buffAdd;
+     }
+    if (typeof(y) == 'function' && y.name == 'mul') {
+        var buffMul = 1;
+        for (var i = 0; i < arr.length; i += 1) {
+        buffMul = mul(buffMul, arr[i]);
+        }
+        return buffMul;        
+     }
+    arr.push(y);
+    return func;
+  }
+  return func;  
+}
+
+
+var result = calc(1)(2)(3)(4)(5);
+
+console.assert(result(add) == 15);
+console.assert(result(mul) == 120);
