@@ -28,7 +28,11 @@ function clone(obj) {
 
 var user = {
     name: "Name",
-    country: "Country"
+    country: "Country",
+    subObj:
+    {
+        text: '123'
+    }
 };
 
 var newUser = clone(user);
@@ -87,11 +91,9 @@ console.log(newUser.country);
 
 
 function revers(str) {
-  var i, buff = '';
-  for (i = str.length; i >= 0; i -= 1) {
-    buff += str.charAt(i);
-  }
-  return buff;
+  return str.split('')
+            .reverse()
+            .join('');
 }
 
 console.log(revers('abc sdsd'));
@@ -102,16 +104,8 @@ console.log(revers('abc sdsd'));
 
 Arr = [1, 2, 3, 4, 5];
 
-var newArr = Arr.map(
-  function(item) {
-    return function() {
-        return item;
-      };
-    }
+var newArr = Arr.map(item => (() => item)
 );
-
-
-console.log(newArr[0]);
 
 if (newArr[1]() == 2) {
   console.log('true');
@@ -148,26 +142,14 @@ function mul(x, y) {
 function calc(x) {
   var arr = [x];
   function func(y) {
-    if (typeof(y) == 'function' && y.name == 'add') {
-        var buffAdd = 0;
-        for (var i = 0; i < arr.length; i += 1) {
-          buffAdd = add(buffAdd, arr[i]);
-        }   
-        return buffAdd;
-     }
-    if (typeof(y) == 'function' && y.name == 'mul') {
-        var buffMul = 1;
-        for (var i = 0; i < arr.length; i += 1) {
-        buffMul = mul(buffMul, arr[i]);
-        }
-        return buffMul;        
+    if (typeof(y) == 'function') {
+        return arr.reduce(y);
      }
     arr.push(y);
     return func;
   }
   return func;  
 }
-
 
 var result = calc(1)(2)(3)(4)(5);
 
