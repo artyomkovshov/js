@@ -1,0 +1,60 @@
+.row {
+    padding: 1em 0 0;
+}
+
+.line {
+    border-bottom: 1px solid black;
+    margin: 0 15px;
+}
+
+.todo-item {
+	position: relative;
+}
+
+.remove {
+	display: none;
+	position: absolute;
+	top: -0.3em;
+	right: 10px;
+	bottom: 0;
+	width: 40px;
+	height: 40px;
+	font-size: 30px;
+	color: black;
+	margin-bottom: 11px;
+	transition: color 0.2s ease-out;
+    outline: none;
+    background: transparent;
+    border: none;
+}
+
+.remove:hover {
+    color: red;
+}
+
+.remove:after {
+    content: '×';
+}
+
+.todo-item:hover .remove {
+	display: block;
+}
+
+.completed .todo-item label {
+	text-decoration: line-through;
+}
+
+.todoList li {
+	position: relative;
+}
+
+.edit {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 1em;
+}
+
+.js-display {
+	display: block;
+}
